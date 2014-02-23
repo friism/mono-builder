@@ -1,0 +1,21 @@
+set -e
+
+if [ ! -f "/var/cache/mono-$VERSION.tar.bz2" ]; then
+  wget -q -O /var/cache/mono-$VERSION.tar.bz2 http://download.mono-project.com/sources/mono/mono-$VERSION.tar.bz2
+fi
+
+tar jxf /var/cache/mono-$VERSION.tar.bz2
+
+cd mono-$VERSION
+./configure --prefix=/app/mono --sysconfdir=/app/mono \
+    --disable-moonlight --disable-nls --enable-minimal=aot,profiler,debug,logging \
+    --disable-libraries --disable-boehm --with-mcs-docs=no
+make monolite_url=http://storage.bos.xamarin.com/mono-dist-master/latest/monolite-111-latest.tar.gz get-monolite-latest
+make EXTERNAL_MCS="${PWD}/mcs/class/lib/monolite/gmcs.exe"
+make install
+
+ln -s /app/mono/lib/mono/xbuild/Microsoft/VisualStudio/v9.0 /app/mono/lib/mono/xbuild/Microsoft/VisualStudio/v10.0
+cd /app
+tar -zcf - mono | /gof3r put --md5Check-off -b mono-dependencies -k mono-$VERSION.tar.gz
+
+
