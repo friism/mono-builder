@@ -6,7 +6,7 @@ To build:
 $ docker build -t my-user/mono-builder .
 ```
 
-To build and upload new version:
+To build and upload new Mono version:
 
 ```term
 $ docker run -v ${PWD}/cache:/var/cache -e AWS_ACCESS_KEY_ID=key -e AWS_SECRET_ACCESS_KEY=secret -e VERSION=3.2.8 my-user/mono-builder
