@@ -16,6 +16,6 @@ make install
 
 ln -s /app/mono/lib/mono/xbuild/Microsoft/VisualStudio/v9.0 /app/mono/lib/mono/xbuild/Microsoft/VisualStudio/v10.0
 cd /app
-tar -zcf - mono | /gof3r put --md5Check-off -b mono-dependencies -k mono-$VERSION.tar.gz
+tar -zcf - mono | /gof3r put --md5Check-off -b mono-dependencies -k $STACK/mono-$VERSION.tar.gz
 
 
