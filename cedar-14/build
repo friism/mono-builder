@@ -16,4 +16,7 @@ make && make install
 cd /app
 tar -zcf - mono | /gof3r put --md5Check-off -b mono-dependencies -k $STACK/mono-$VERSION.tar.gz
 
+find . -name "*.mdb" -delete
+find mono | xargs strip 2> /dev/null
+rm -rf mono/lib/mono/gac/EntityFramework* mono/lib/mono/gac/System.Web* mono/lib/mono/gac/System.Windows.Forms*
 
