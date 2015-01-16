@@ -11,9 +11,7 @@ cd mono-$VERSION
     --disable-moonlight --disable-nls --enable-minimal=aot,profiler,debug,logging \
     --disable-libraries --disable-boehm --with-mcs-docs=no \
     --with-profile2=no
-make monolite_url=http://storage.bos.xamarin.com/mono-dist-$VERSION-release/latest/monolite-111-latest.tar.gz get-monolite-latest
-make EXTERNAL_MCS="${PWD}/mcs/class/lib/monolite/gmcs.exe"
-make install
+make && make install
 
 ln -s /app/mono/lib/mono/xbuild/Microsoft/VisualStudio/v9.0 /app/mono/lib/mono/xbuild/Microsoft/VisualStudio/v10.0
 cd /app
