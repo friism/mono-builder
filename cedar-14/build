@@ -9,7 +9,8 @@ tar jxf /var/cache/mono-$VERSION.tar.bz2
 cd mono-$VERSION
 ./configure --prefix=/app/mono \
     --disable-moonlight --disable-nls --enable-minimal=aot,profiler,debug,logging \
-    --disable-libraries --disable-boehm --with-mcs-docs=no
+    --disable-libraries --disable-boehm --with-mcs-docs=no \
+    --with-profile2=no
 make monolite_url=http://storage.bos.xamarin.com/mono-dist-$VERSION-release/latest/monolite-111-latest.tar.gz get-monolite-latest
 make EXTERNAL_MCS="${PWD}/mcs/class/lib/monolite/gmcs.exe"
 make install
