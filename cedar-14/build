@@ -1,12 +1,17 @@
+#!/usr/bin/env bash
+
 set -e
 
-if [ ! -f "/var/cache/mono-$VERSION.tar.bz2" ]; then
-  wget -q -O /var/cache/mono-$VERSION.tar.bz2 http://download.mono-project.com/sources/mono/mono-$VERSION.tar.bz2
+CACHE_DIR="/var/cache/mono-$VERSION"
+
+if [ ! -d "$CACHE_DIR" ]; then
+    git clone --recursive --depth 1 --branch mono-$VERSION https://github.com/mono/mono.git $CACHE_DIR
 fi
 
-tar jxf /var/cache/mono-$VERSION.tar.bz2
-
+rsync -r $CACHE_DIR . --exclude .git
 cd mono-$VERSION
+
+./autogen.sh
 ./configure --prefix=/app/mono \
     --disable-moonlight --disable-nls --enable-minimal=aot,profiler,debug,logging \
     --disable-libraries --disable-boehm --with-mcs-docs=no \
@@ -15,8 +20,19 @@ make && make install
 
 cd /app
 
-find . -name "*.mdb" -delete
-find mono | xargs strip 2> /dev/null
-rm -rf mono/lib/mono/gac/EntityFramework* mono/lib/mono/gac/System.Web* mono/lib/mono/gac/System.Windows.Forms*
+rm -rf mono/lib/mono/gac/EntityFramework* \
+   mono/lib/mono/gac/System.Windows.Forms* \
+   mono/lib/mono/gac/System.Data.Entity
 
-tar -zcf - mono | /gof3r put --md5Check-off -b mono-dependencies -k $STACK/mono-$VERSION.tar.gz
+find . -name "*.mdb" -delete
+find mono -name *Entity* -exec rm -rf "{}" \;
+find mono -name *Entity* -delete
+find mono -name *System.Windows.Forms* -delete
+find mono -name sqlmetal.exe -delete
+
+find mono | xargs strip 2> /dev/null
+
+MONO_ARCHIVE=mono-$VERSION.tar.gz
+tar -zcf $MONO_ARCHIVE mono
+rm -rf /var/out/$MONO_ARCHIVE
+mv $MONO_ARCHIVE /var/out/.
